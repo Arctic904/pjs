@@ -19,7 +19,11 @@ If you built the binary, you can run it with `./project-management` or even add 
 ## TODOs
 
 - [ ] print to PDF
-- [ ] print to markdown
+- [ ] save as markdown
+    - [ ] Create local folder
+    - [ ] Project structure
+        - [ ] json config
+        - [ ] markdown files
 - [ ] backup to `charm-fs`
 
 ### Entry View

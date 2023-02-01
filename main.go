@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/adrg/xdg"
+	"github.com/arctic904/pjs/project"
+	// "github.com/arctic904/pjs/tui"
+	// "github.com/pkg/errors"
 )
 
 func getLocalFolder() string {
@@ -26,9 +30,22 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	println(projects)
+	file, err := os.ReadFile("./example_config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	var projectList []project.Project
+	MyJson := []byte(file)
+	err = json.Unmarshal(MyJson, &projectList)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("%s", projectList)
+	println("")
 	// if len(projects) < 1 {
 	// 	name := project.NewProjectPrompt()
-	// 	_, err := pr.CreateProject(name)
+	// 	_, err := project.CreateProject(name)
 	// 	if err != nil {
 	// 		log.Fatal(errors.Wrap(err, "error creating project"))
 	// 	}

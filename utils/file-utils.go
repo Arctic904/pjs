@@ -25,3 +25,11 @@ func ReadFile(file *os.File) ([]byte, error) {
 	}
 	return bytes, nil
 }
+
+func readProjJson() ([]byte, error) {
+	bytes, err := os.ReadFile("example_config.json")
+	if err != nil {
+		return []byte(""), errors.Wrap(err, "Unable to read proj.json")
+	}
+	return bytes, nil
+}
