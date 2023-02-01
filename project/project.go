@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/arctic904/pjs/utils"
 )
 
 const (
@@ -68,9 +70,9 @@ func PrintProjects(path string) {
 }
 
 // GetAllProjects retrieve all projects from the database
-func GetAllProjects(path string) ([]Project, error) {
-	var projects []Project
-	if err := g.DB.Find(&projects).Error; err != nil {
+func GetAllProjects(path string) ([]utils.Project, error) {
+	projects, err := utils.ReadProjJson()
+	if err != nil {
 		return projects, fmt.Errorf("Table is empty: %v", err)
 	}
 	return projects, nil
@@ -78,7 +80,7 @@ func GetAllProjects(path string) ([]Project, error) {
 
 // HasProjects see if a database has any projects
 func HasProjects(path string) bool {
-	if projects, _ := utils.readProjJson(); len(projects) == 0 {
+	if projects, _ := utils.ReadProjJson(); len(projects) == 0 {
 		return false
 	}
 	return true

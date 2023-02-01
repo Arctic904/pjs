@@ -1,12 +1,18 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/pkg/errors"
 )
+
+type Project struct {
+	Name string `json:"name"`
+	Desc string `json:"description"`
+}
 
 // CreateTempFile creates a temporary file to be opened in the editor
 func CreateTempFile() *os.File {
@@ -26,10 +32,16 @@ func ReadFile(file *os.File) ([]byte, error) {
 	return bytes, nil
 }
 
-func readProjJson() ([]byte, error) {
+func ReadProjJson() ([]Project, error) {
 	bytes, err := os.ReadFile("example_config.json")
 	if err != nil {
-		return []byte(""), errors.Wrap(err, "Unable to read proj.json")
+		return nil, errors.Wrap(err, "Unable to read proj.json")
 	}
-	return bytes, nil
+	var projectList []Project
+	MyJson := []byte(bytes)
+	err = json.Unmarshal(MyJson, &projectList)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return projectList, nil
 }
