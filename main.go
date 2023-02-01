@@ -1,43 +1,54 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
-	"github.com/bashbunni/pjs/entry"
-	"github.com/bashbunni/pjs/project"
-	"github.com/bashbunni/pjs/tui"
-	"github.com/pkg/errors"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/adrg/xdg"
 )
 
-func openSqlite() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("new.db"), &gorm.Config{})
+func getLocalFolder() string {
+	dirPath := fmt.Sprintf("%v/.pjs", xdg.DataHome)
+	_, err := os.ReadDir(dirPath)
 	if err != nil {
-		log.Fatalf("unable to open database: %v", err)
+		ferr := os.Mkdir(dirPath, os.ModePerm)
+		if ferr != nil {
+			log.Fatal(ferr)
+		}
 	}
-	err = db.AutoMigrate(&entry.Entry{}, &project.Project{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	return db
+	return dirPath
 }
 
 func main() {
-	db := openSqlite()
-	pr := project.GormRepository{DB: db}
-	er := entry.GormRepository{DB: db}
-	projects, err := pr.GetAllProjects()
+	path := getLocalFolder()
+	projects, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if len(projects) < 1 {
-		name := project.NewProjectPrompt()
-		_, err := pr.CreateProject(name)
-		if err != nil {
-			log.Fatal(errors.Wrap(err, "error creating project"))
-		}
-	} else {
-		tui.StartTea(pr, er)
-	}
+	// if len(projects) < 1 {
+	// 	name := project.NewProjectPrompt()
+	// 	_, err := pr.CreateProject(name)
+	// 	if err != nil {
+	// 		log.Fatal(errors.Wrap(err, "error creating project"))
+	// 	}
+	// } else {
+	// 	tui.StartTea(pr, er)
+	// }
+	// db := openSqlite()
+	// pr := project.GormRepository{DB: db}
+	// er := entry.GormRepository{DB: db}
+	// projects, err := pr.GetAllProjects()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// if len(projects) < 1 {
+	// 	name := project.NewProjectPrompt()
+	// 	_, err := pr.CreateProject(name)
+	// 	if err != nil {
+	// 		log.Fatal(errors.Wrap(err, "error creating project"))
+	// 	}
+	// } else {
+	// 	tui.StartTea(pr, er)
+	// }
 }
