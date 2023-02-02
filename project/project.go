@@ -13,36 +13,21 @@ const (
 	format string = "%v\n"
 )
 
-// Project the project holds entries
-type Project struct {
-	Name string `json:"name"`
-	Desc string `json:"description"`
-}
-
 // NewProject create a new project instance.
 // DeletedAt defaults to the zero value for time.Time.
-func NewProject(id uint, name string) *Project {
-	return &Project{Name: name}
+func NewProject(id uint, name string) *utils.Project {
+	return &utils.Project{Name: name}
 }
 
 // Implement list.Item for Bubbletea TUI
-
-// Title the project title to display in a list
-func (p Project) Title() string { return p.Name }
-
-// Description the project description to display in a list
-func (p Project) Description() string { return fmt.Sprintf("%v", p.Desc) }
-
-// FilterValue choose what field to use for filtering in a Bubbletea list component
-func (p Project) FilterValue() string { return p.Name }
 
 // Repository CRUD operations for Projects
 type Repository interface {
 	PrintProjects()
 	HasProjects() bool
-	GetProjectByID(projectID uint) (Project, error)
-	GetAllProjects() ([]Project, error)
-	CreateProject(name string) (Project, error)
+	GetProjectByID(projectID uint) (utils.Project, error)
+	GetAllProjects() ([]utils.Project, error)
+	CreateProject(name string) (utils.Project, error)
 	DeleteProject(projectID uint) error
 	RenameProject(projectID uint) error
 }
@@ -87,8 +72,8 @@ func HasProjects(path string) bool {
 }
 
 // CreateProject add a new project to the database
-func CreateProject(name string, path string) (Project, error) {
-	proj := Project{Name: name}
+func CreateProject(name string, path string) (utils.Project, error) {
+	proj := utils.Project{Name: name}
 	err := os.Mkdir(fmt.Sprintf("%v/%v", path, name), 0644)
 	if err != nil {
 		return proj, fmt.Errorf("Cannot create project: %v", err)

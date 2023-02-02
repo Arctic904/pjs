@@ -14,6 +14,15 @@ type Project struct {
 	Desc string `json:"description"`
 }
 
+// Title the project title to display in a list
+func (p Project) Title() string { return p.Name }
+
+// Description the project description to display in a list
+func (p Project) Description() string { return fmt.Sprintf("%v", p.Desc) }
+
+// FilterValue choose what field to use for filtering in a Bubbletea list component
+func (p Project) FilterValue() string { return p.Name }
+
 // CreateTempFile creates a temporary file to be opened in the editor
 func CreateTempFile() *os.File {
 	file, err := os.CreateTemp(os.TempDir(), "*")

@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/arctic904/pjs/project"
 	"github.com/arctic904/pjs/tui/constants"
 	"github.com/arctic904/pjs/utils"
 	tea "github.com/charmbracelet/bubbletea"
@@ -53,7 +52,7 @@ func (m Entry) createEntryCmd(file *os.File) tea.Cmd {
 
 /* ENTRIES */
 
-func createProjectCmd(name string, pr *project.GormRepository) tea.Cmd {
+func createProjectCmd(name string, pr *[]utils.Project) tea.Cmd {
 	return func() tea.Msg {
 		_, err := pr.CreateProject(name)
 		if err != nil {
@@ -63,7 +62,7 @@ func createProjectCmd(name string, pr *project.GormRepository) tea.Cmd {
 	}
 }
 
-func renameProjectCmd(id uint, pr *project.GormRepository, name string) tea.Cmd {
+func renameProjectCmd(id uint, pr *[]utils.Project, name string) tea.Cmd {
 	return func() tea.Msg {
 		pr.RenameProject(id, name)
 		projects, err := pr.GetAllProjects()
@@ -76,7 +75,7 @@ func renameProjectCmd(id uint, pr *project.GormRepository, name string) tea.Cmd 
 	}
 }
 
-func deleteProjectCmd(id uint, pr *project.GormRepository) tea.Cmd {
+func deleteProjectCmd(id uint, pr *[]utils.Project) tea.Cmd {
 	return func() tea.Msg {
 		err := pr.DeleteProject(id)
 		if err != nil {
