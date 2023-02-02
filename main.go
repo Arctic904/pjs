@@ -8,6 +8,7 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/arctic904/pjs/project"
 	"github.com/arctic904/pjs/tui"
+	"github.com/arctic904/pjs/tui/constants"
 	"github.com/arctic904/pjs/utils"
 	"github.com/pkg/errors"
 )
@@ -30,6 +31,7 @@ func getLocalFolder() string {
 
 func main() {
 	path := getLocalFolder()
+	constants.Path = path
 	projects, err := utils.ReadProjJson()
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "error reading project file"))

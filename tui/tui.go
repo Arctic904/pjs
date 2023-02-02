@@ -5,13 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/arctic904/pjs/project"
 	"github.com/arctic904/pjs/tui/constants"
+	"github.com/arctic904/pjs/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 // StartTea the entry point for the UI. Initializes the model.
-func StartTea(pr []project.Project) {
+func StartTea(pr []utils.Project) {
 	if f, err := tea.LogToFile("debug.log", "help"); err != nil {
 		log.Fatalln("Couldn't open a file for logging:", err)
 	} else {
