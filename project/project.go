@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	format string = "%d : %s\n"
+	format string = "%v\n"
 )
 
 // Project the project holds entries
@@ -31,7 +31,7 @@ func NewProject(id uint, name string) *Project {
 func (p Project) Title() string { return p.Name }
 
 // Description the project description to display in a list
-func (p Project) Description() string { return fmt.Sprintf("%d", p.ID) }
+func (p Project) Description() string { return fmt.Sprintf("%v", p.Desc) }
 
 // FilterValue choose what field to use for filtering in a Bubbletea list component
 func (p Project) FilterValue() string { return p.Name }
@@ -48,24 +48,24 @@ type Repository interface {
 }
 
 // GetProjectByID get a project by ID
-func GetProjectByID(projectID uint, path string) (Project, error) {
-	var preturn Project
-	files, err := os.ReadDir(fmt.Sprintf("%v/%v", path, projectID))
+func GetProjectByID(projectID int, path string) (utils.Project, error) {
+	var preturn utils.Project
+	projects, err := utils.ReadProjJson()
 	if err != nil {
 		return preturn, fmt.Errorf("Cannot find project: %v", err)
 	}
 
-	return preturn, nil
+	return projects[projectID], nil
 }
 
 // PrintProjects print all projects to the console
 func PrintProjects(path string) {
-	projects, err := g.GetAllProjects()
+	projects, err := GetAllProjects(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 	for _, project := range projects {
-		fmt.Printf(format, project.ID, project.Name)
+		fmt.Printf(format, project.Name)
 	}
 }
 
@@ -89,15 +89,24 @@ func HasProjects(path string) bool {
 // CreateProject add a new project to the database
 func CreateProject(name string, path string) (Project, error) {
 	proj := Project{Name: name}
-	if err := g.DB.Create(&proj).Error; err != nil {
+	err := os.Mkdir(fmt.Sprintf("%v/%v", path, name), 0644)
+	if err != nil {
 		return proj, fmt.Errorf("Cannot create project: %v", err)
 	}
 	return proj, nil
 }
 
 // DeleteProject delete a project by ID
-func DeleteProject(projectID uint, path string) error {
-	if err := g.DB.Delete(&Project{}, projectID).Error; err != nil {
+func DeleteProject(projectID int, path string) error {
+	proj, err := GetAllProjects(path)
+	if err != nil {
+		return fmt.Errorf("Cannot delete project: %v", err)
+	}
+	name := proj[projectID].Name
+	err = os.RemoveAll(fmt.Sprintf("%v/%v", path, name))
+	remove(proj, projectID)
+	err = utils.WriteProjJson([]byte(fmt.Sprintf("%v", proj)), path)
+	if err != nil {
 		return fmt.Errorf("Cannot delete project: %v", err)
 	}
 	return nil
@@ -105,13 +114,14 @@ func DeleteProject(projectID uint, path string) error {
 
 // RenameProject rename an existing project
 func RenameProject(id uint, name string, path string) {
-	var newProject Project
-	if err := g.DB.Where("id = ?", id).First(&newProject).Error; err != nil {
-		log.Fatalf("Unable to rename project: %q", err)
+	proj, err := GetAllProjects(path)
+	if err != nil {
+		log.Default().Printf("Cannot rename project: %v\n", err)
 	}
-	newProject.Name = name
-	if err := g.DB.Save(&newProject).Error; err != nil {
-		log.Fatalf("Unable to save project: %q", err)
+	proj[id].Name = name
+	err = utils.WriteProjJson([]byte(fmt.Sprintf("%v", proj)), path)
+	if err != nil {
+		log.Default().Printf("Cannot rename project: %v\n", err)
 	}
 }
 
@@ -123,4 +133,8 @@ func NewProjectPrompt() string {
 	scanner.Scan()
 	name = scanner.Text()
 	return name
+}
+
+func remove(slice []utils.Project, s int) []utils.Project {
+	return append(slice[:s], slice[s+1:]...)
 }

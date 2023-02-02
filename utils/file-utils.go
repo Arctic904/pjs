@@ -45,3 +45,12 @@ func ReadProjJson() ([]Project, error) {
 	}
 	return projectList, nil
 }
+
+func WriteProjJson(proj []byte, path string) error {
+	newJson, err := json.Marshal(proj)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(fmt.Sprintf("%v/config.json", path), newJson, 0777)
+	return err
+}

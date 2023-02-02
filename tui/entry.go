@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bashbunni/pjs/entry"
-	"github.com/bashbunni/pjs/tui/constants"
+	"github.com/arctic904/pjs/entry"
+	"github.com/arctic904/pjs/tui/constants"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/paginator"
 	"github.com/charmbracelet/bubbles/viewport"

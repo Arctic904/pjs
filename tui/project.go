@@ -3,8 +3,8 @@ package tui
 import (
 	"log"
 
-	"github.com/bashbunni/pjs/project"
-	"github.com/bashbunni/pjs/tui/constants"
+	"github.com/arctic904/pjs/project"
+	"github.com/arctic904/pjs/tui/constants"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"

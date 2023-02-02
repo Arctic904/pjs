@@ -5,9 +5,9 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/bashbunni/pjs/project"
-	"github.com/bashbunni/pjs/tui/constants"
-	"github.com/bashbunni/pjs/utils"
+	"github.com/arctic904/pjs/project"
+	"github.com/arctic904/pjs/tui/constants"
+	"github.com/arctic904/pjs/utils"
 	tea "github.com/charmbracelet/bubbletea"
 )
 

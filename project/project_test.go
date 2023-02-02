@@ -1,122 +1,113 @@
 package project
 
-import (
-	"log"
-	"reflect"
-	"testing"
+// func Setup(t *testing.T) *gorm.DB {
+// 	t.Helper() // allows me to log Gorm errors later
+// 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
+// 	if err != nil {
+// 		log.Fatalf("unable to open in-memory SQLite DB: %v", err)
+// 	}
+// 	db.AutoMigrate(&Project{})
+// 	t.Cleanup(func() {
+// 		db.Migrator().DropTable(&Project{})
+// 	})
+// 	return db
+// }
 
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-)
+// // TestCreateProject
 
-func Setup(t *testing.T) *gorm.DB {
-	t.Helper() // allows me to log Gorm errors later
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
-	if err != nil {
-		log.Fatalf("unable to open in-memory SQLite DB: %v", err)
-	}
-	db.AutoMigrate(&Project{})
-	t.Cleanup(func() {
-		db.Migrator().DropTable(&Project{})
-	})
-	return db
-}
+// func TestCreateProjectForEmptyDB(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-// TestCreateProject
+// 	pr.CreateProject("hello")
+// 	pr.CreateProject("world")
 
-func TestCreateProjectForEmptyDB(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// 	got, _ := pr.GetAllProjects()
+// 	want := []Project{{Name: "hello"}, {Name: "world"}}
+// 	for i := range want {
+// 		if got[i].Name != want[i].Name {
+// 			t.Errorf("got %s want %s", got[i].Name, want[i].Name)
+// 		}
+// 	}
+// }
 
-	pr.CreateProject("hello")
-	pr.CreateProject("world")
+// // TestHasProjects
 
-	got, _ := pr.GetAllProjects()
-	want := []Project{{Name: "hello"}, {Name: "world"}}
-	for i := range want {
-		if got[i].Name != want[i].Name {
-			t.Errorf("got %s want %s", got[i].Name, want[i].Name)
-		}
-	}
-}
+// func TestHasNoProjectsForEmptyDB(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-// TestHasProjects
+// 	got := pr.HasProjects()
+// 	want := false
+// 	if got != want {
+// 		t.Errorf("got %t want %t", got, want)
+// 	}
+// }
 
-func TestHasNoProjectsForEmptyDB(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// func TestHasTwoProjects(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-	got := pr.HasProjects()
-	want := false
-	if got != want {
-		t.Errorf("got %t want %t", got, want)
-	}
-}
+// 	pr.CreateProject("hello")
+// 	pr.CreateProject("world")
 
-func TestHasTwoProjects(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// 	got := pr.HasProjects()
+// 	want := true
+// 	if got != want {
+// 		t.Errorf("got %t want %t", got, want)
+// 	}
+// }
 
-	pr.CreateProject("hello")
-	pr.CreateProject("world")
+// // TestGetAllProjects
 
-	got := pr.HasProjects()
-	want := true
-	if got != want {
-		t.Errorf("got %t want %t", got, want)
-	}
-}
+// func TestGetProjectsFromEmptyDB(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-// TestGetAllProjects
+// 	got, _ := pr.GetAllProjects()
+// 	if len(got) != 0 {
+// 		t.Error("did not get an empty project list")
+// 	}
+// }
 
-func TestGetProjectsFromEmptyDB(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// func TestGetTwoProjects(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-	got, _ := pr.GetAllProjects()
-	if len(got) != 0 {
-		t.Error("did not get an empty project list")
-	}
-}
+// 	pr.CreateProject("hello")
+// 	pr.CreateProject("world")
 
-func TestGetTwoProjects(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// 	got, _ := pr.GetAllProjects()
+// 	want := []Project{{Name: "hello"}, {Name: "world"}}
+// 	for i := range want {
+// 		if got[i].Name != want[i].Name {
+// 			t.Errorf("got %s want %s", got[i].Name, want[i].Name)
+// 		}
+// 	}
+// }
 
-	pr.CreateProject("hello")
-	pr.CreateProject("world")
+// // TestGetProjectByID
 
-	got, _ := pr.GetAllProjects()
-	want := []Project{{Name: "hello"}, {Name: "world"}}
-	for i := range want {
-		if got[i].Name != want[i].Name {
-			t.Errorf("got %s want %s", got[i].Name, want[i].Name)
-		}
-	}
-}
+// func TestGetProjectFromEmptyDB(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-// TestGetProjectByID
+// 	_, err := pr.GetProjectByID(1)
+// 	if err == nil {
+// 		t.Error("expected an error")
+// 	}
+// }
 
-func TestGetProjectFromEmptyDB(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
+// func TestGetProjectFromNonEmptyDB(t *testing.T) {
+// 	db := Setup(t)
+// 	pr := GormRepository{DB: db}
 
-	_, err := pr.GetProjectByID(1)
-	if err == nil {
-		t.Error("expected an error")
-	}
-}
+// 	pr.CreateProject("hello")
+// 	pr.CreateProject("world")
 
-func TestGetProjectFromNonEmptyDB(t *testing.T) {
-	db := Setup(t)
-	pr := GormRepository{DB: db}
-
-	pr.CreateProject("hello")
-	pr.CreateProject("world")
-
-	got, err := pr.GetProjectByID(1)
-	want := Project{Name: "hello"}
-	if err != nil || reflect.DeepEqual(got, want) {
-		t.Errorf("got %s want %s. err == %v", got.Name, want.Name, err)
-	}
-}
+// 	got, err := pr.GetProjectByID(1)
+// 	want := Project{Name: "hello"}
+// 	if err != nil || reflect.DeepEqual(got, want) {
+// 		t.Errorf("got %s want %s. err == %v", got.Name, want.Name, err)
+// 	}
+// }

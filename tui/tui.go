@@ -5,17 +5,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/bashbunni/pjs/entry"
-	"github.com/bashbunni/pjs/project"
-	"github.com/bashbunni/pjs/tui/constants"
+	"github.com/arctic904/pjs/project"
+	"github.com/arctic904/pjs/tui/constants"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 // StartTea the entry point for the UI. Initializes the model.
-func StartTea(pr project.GormRepository, er entry.GormRepository) {
+func StartTea(pr []project.Project) {
 	if f, err := tea.LogToFile("debug.log", "help"); err != nil {
-		fmt.Println("Couldn't open a file for logging:", err)
-		os.Exit(1)
+		log.Fatalln("Couldn't open a file for logging:", err)
 	} else {
 		defer func() {
 			err = f.Close()
@@ -25,7 +23,6 @@ func StartTea(pr project.GormRepository, er entry.GormRepository) {
 		}()
 	}
 	constants.Pr = &pr
-	constants.Er = &er
 
 	m := InitProject()
 	constants.P = tea.NewProgram(m, tea.WithAltScreen())
